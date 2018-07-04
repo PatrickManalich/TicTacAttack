@@ -5,10 +5,10 @@ using UnityEngine;
 /* Cordinates base spawning at specified times using the private spawn model class */
 public class BaseOperator : MonoBehaviour {
 
-    public GameObject baseA;    // The reference of the base A game object
-    public GameObject baseB;    // The reference of the base B game object
-    public GameObject baseC;    // The reference of the base C game object
-    public GameObject baseD;    // The reference of the base D game object
+    public GameObject baseA;    // The reference of the base A GameObject
+    public GameObject baseB;    // The reference of the base B GameObject
+    public GameObject baseC;    // The reference of the base C GameObject
+    public GameObject baseD;    // The reference of the base D GameObject
 
     private class SpawnModel {  // Encapsulates all the necessary information to spawn tic tacs
         public int spawnAmount; // How many tic tacs to spawn
@@ -48,25 +48,25 @@ public class BaseOperator : MonoBehaviour {
         baseDSpawnModels = new Queue<SpawnModel>();
 
         // Wave 1
-        baseASpawnModels.Enqueue(new SpawnModel(5, TicTacTag.Flavor.Orange, 5.0f));
-        baseBSpawnModels.Enqueue(new SpawnModel(5, TicTacTag.Flavor.Mint, 5.0f));
-        baseCSpawnModels.Enqueue(new SpawnModel(5, TicTacTag.Flavor.PeachAndPassionFruit, 5.0f));
-        baseDSpawnModels.Enqueue(new SpawnModel(5, TicTacTag.Flavor.Spearmint, 5.0f));
-        // Wave 2
-        baseASpawnModels.Enqueue(new SpawnModel(5, TicTacTag.Flavor.Mint, 5.0f));
-        baseBSpawnModels.Enqueue(new SpawnModel(5, TicTacTag.Flavor.PeachAndPassionFruit, 5.0f));
-        baseCSpawnModels.Enqueue(new SpawnModel(5, TicTacTag.Flavor.Spearmint, 5.0f));
-        baseDSpawnModels.Enqueue(new SpawnModel(5, TicTacTag.Flavor.Orange, 5.0f));
-        // Wave 3
-        baseASpawnModels.Enqueue(new SpawnModel(5, TicTacTag.Flavor.PeachAndPassionFruit, 5.0f));
-        baseBSpawnModels.Enqueue(new SpawnModel(5, TicTacTag.Flavor.Spearmint, 5.0f));
-        baseCSpawnModels.Enqueue(new SpawnModel(5, TicTacTag.Flavor.Orange, 5.0f));
-        baseDSpawnModels.Enqueue(new SpawnModel(5, TicTacTag.Flavor.Mint, 5.0f));
-        // Wave 4
-        baseASpawnModels.Enqueue(new SpawnModel(5, TicTacTag.Flavor.Spearmint, 5.0f));
-        baseBSpawnModels.Enqueue(new SpawnModel(5, TicTacTag.Flavor.Orange, 5.0f));
-        baseCSpawnModels.Enqueue(new SpawnModel(5, TicTacTag.Flavor.Mint, 5.0f));
-        baseDSpawnModels.Enqueue(new SpawnModel(5, TicTacTag.Flavor.PeachAndPassionFruit, 5.0f));
+        baseASpawnModels.Enqueue(new SpawnModel(20, TicTacTag.Flavor.Orange, 1.0f));
+        baseBSpawnModels.Enqueue(new SpawnModel(20, TicTacTag.Flavor.Mint, 1.0f));
+        baseCSpawnModels.Enqueue(new SpawnModel(20, TicTacTag.Flavor.PeachAndPassionFruit, 1.0f));
+        baseDSpawnModels.Enqueue(new SpawnModel(20, TicTacTag.Flavor.Spearmint, 1.0f));
+        //// Wave 2
+        //baseASpawnModels.Enqueue(new SpawnModel(5, TicTacTag.Flavor.Mint, 5.0f));
+        //baseBSpawnModels.Enqueue(new SpawnModel(5, TicTacTag.Flavor.PeachAndPassionFruit, 5.0f));
+        //baseCSpawnModels.Enqueue(new SpawnModel(5, TicTacTag.Flavor.Spearmint, 5.0f));
+        //baseDSpawnModels.Enqueue(new SpawnModel(5, TicTacTag.Flavor.Orange, 5.0f));
+        //// Wave 3
+        //baseASpawnModels.Enqueue(new SpawnModel(5, TicTacTag.Flavor.PeachAndPassionFruit, 5.0f));
+        //baseBSpawnModels.Enqueue(new SpawnModel(5, TicTacTag.Flavor.Spearmint, 5.0f));
+        //baseCSpawnModels.Enqueue(new SpawnModel(5, TicTacTag.Flavor.Orange, 5.0f));
+        //baseDSpawnModels.Enqueue(new SpawnModel(5, TicTacTag.Flavor.Mint, 5.0f));
+        //// Wave 4
+        //baseASpawnModels.Enqueue(new SpawnModel(5, TicTacTag.Flavor.Spearmint, 5.0f));
+        //baseBSpawnModels.Enqueue(new SpawnModel(5, TicTacTag.Flavor.Orange, 5.0f));
+        //baseCSpawnModels.Enqueue(new SpawnModel(5, TicTacTag.Flavor.Mint, 5.0f));
+        //baseDSpawnModels.Enqueue(new SpawnModel(5, TicTacTag.Flavor.PeachAndPassionFruit, 5.0f));
     }
 
     private void Start() {
@@ -95,7 +95,7 @@ public class BaseOperator : MonoBehaviour {
         }
 
         yield return new WaitForSeconds(spawnModel.spawnTime);
-        Debug.Log((int)Time.time + " secs: Spawning " + spawnModel.spawnAmount + " " + spawnModel.flavor + "s from " + baseName);
+        Debug.Log((int)Time.time + " secs: Spawning " + spawnModel.spawnAmount + " " + spawnModel.flavor + " Tic Tacs from " + baseName);
         baseScriptDictionary[baseName].SpawnEnemies(spawnModel.flavor, spawnModel.spawnAmount);
 
         Queue<SpawnModel> spawnModels;              // Store a reference to the correct spawn model queue

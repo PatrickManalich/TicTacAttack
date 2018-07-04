@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-/* A tic tac flavor that is on the ranged path route and shoots small bullets at the collector
+/* A tic tac flavor that is on the ranged path route and shoots small projectiles at the collector
  * at fast intervals for low damage. */
 public class Mint : TicTac {
 
@@ -12,35 +12,37 @@ public class Mint : TicTac {
         get { return pathDistance; }
         set { pathDistance = value; }
     }
-    public GameObject bulletPrefab;
+    public GameObject projectilePrefab;
 
     private const TicTacTag.Flavor flavor = TicTacTag.Flavor.Mint;
     private const TicTacTag.PathRoute pathRoute = TicTacTag.PathRoute.Ranged;
     private TicTacTag.PathDistance pathDistance = TicTacTag.PathDistance.None;
+    private const int damage = 2;
     private const float speed = .75f;
-    private GameObject bullet;
-    private Rigidbody bulletRigidbody;
-    private const float bulletSpeed = 6.0f;
-    private const float bulletArc = 2.0f;
+    private GameObject projectile;
+    private Rigidbody projectileRigidbody;
+    private const float projectileSpeed = 6.0f;
+    private const float projectileArc = 2.0f;
 
     private void Awake() {
-        bullet = Instantiate(bulletPrefab);
-        bulletRigidbody = bullet.GetComponent<Rigidbody>();
-        bullet.GetComponent<Renderer>().material.color = transform.GetChild(0).GetComponent<Renderer>().material.color;
-        bullet.SetActive(false);
+        projectile = Instantiate(projectilePrefab);
+        projectileRigidbody = projectile.GetComponent<Rigidbody>();
+        projectile.GetComponent<Renderer>().material.color = transform.GetChild(0).GetComponent<Renderer>().material.color;
+        projectile.SetActive(false);
     }
 
     protected override float Speed { get { return speed; } }
 
     public override void Attack() {
-        if (!bullet.activeSelf)
-            bullet.SetActive(true);
-        bullet.transform.position = transform.position;
-        bulletRigidbody.velocity = transform.forward * bulletSpeed + Vector3.up * bulletArc;
+        if (!projectile.activeSelf)
+            projectile.SetActive(true);
+        projectile.transform.position = transform.position;
+        projectileRigidbody.velocity = transform.forward * projectileSpeed + Vector3.up * projectileArc;
+        TicTac.collectorScript.Damage(damage);
     }
 
     public override void Remove() {
         base.Remove();
-        Destroy(bullet);
+        Destroy(projectile);
     }
 }

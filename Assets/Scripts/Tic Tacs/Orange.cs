@@ -16,12 +16,13 @@ public class Orange : TicTac {
     private const TicTacTag.Flavor flavor = TicTacTag.Flavor.Orange;
     private const TicTacTag.PathRoute pathRoute = TicTacTag.PathRoute.Melee;
     private TicTacTag.PathDistance pathDistance = TicTacTag.PathDistance.None;
+    private const int damage = 2;
     private const float speed = 1.5f;
 
     protected override float Speed { get { return speed; } }
 
     public override void Attack() {
-        //Debug.Log("Orange attacked!");
+        TicTac.collectorScript.Damage(damage);
     }
 
 }

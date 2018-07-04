@@ -7,10 +7,10 @@ using UnityEngine;
 public class Base : MonoBehaviour {
 
     public List<GameObject> ticTacPrefabs;   // A list of tic tac prefabs that will be cloned when spawning
-    public GameObject meleePathGO;          // The empty game object which holds a close, mid, and far cylinder
-                                            // game object. Used for setting up the melee path
-    public GameObject rangedPathGO;         // The empty game object which holds a close, mid, and far cylinder
-                                            // game object. Used for setting up the ranged path
+    public GameObject meleePathGO;          // The empty GameObject which holds a close, mid, and far cylinder
+                                            // GameObject. Used for setting up the melee path
+    public GameObject rangedPathGO;         // The empty GameObject which holds a close, mid, and far cylinder
+                                            // GameObject. Used for setting up the ranged path
     
     private class Path {    // Encapsulates all necessary information for a path
         public int count = 0;   // The number of tic tacs currently on this path
@@ -20,9 +20,10 @@ public class Base : MonoBehaviour {
         public Queue<TicTac> farEnemyScripts = new Queue<TicTac>();   // Queue of tic tac scripts on far
     }
     private static Base baseScript; // Reference of this base script for passing onto instantiated tic tacs
+    private static Collector collectorScript;   // Reference of the collector script for passing onto instantiated tic tacs
     private Path meleePath;         // The melee path object
     private Path rangedPath;        // The ranged path object
-    private static readonly int[] pathLimits = new int[3] { 5, 10, 20 };  // An array of the close, mid, and far path limits
+    private static readonly int[] pathLimits = new int[3] { 20, 30, 40 };  // An array of the close, mid, and far path limits
     private Queue<float> delayTimes;    // A queue of random delay times to vary when tic tacs are spawned
     private const float delayTimeMax = 1.0f;    // The maximum amount of time an tic tac can wait before spawning
     private Queue<Vector3> spawnPositions;  // A queue of random spawn positions
@@ -47,7 +48,7 @@ public class Base : MonoBehaviour {
 
             GameObject ticTac = Instantiate(ticTacDictionary[flavor], spawnPosition, Quaternion.identity); // Instantiate
             TicTac ticTacScript = ticTac.GetComponent<TicTac>();
-            ticTacScript.InitializeVariables(ref baseScript);
+            ticTacScript.InitializeVariables(ref baseScript, ref collectorScript);
 
             float delayTime = delayTimes.Dequeue();  // Get delay time
             delayTimes.Enqueue(delayTime);
@@ -96,6 +97,7 @@ public class Base : MonoBehaviour {
     /* Initializes private variables and populates the paths. */
     private void Awake() {
         baseScript = gameObject.GetComponent<Base>();
+        collectorScript = GameObject.Find("Collector").GetComponent<Collector>();
 
         ticTacDictionary = new Dictionary<TicTacTag.Flavor, GameObject>(); // Initialize tic tac dictionary
         foreach(GameObject ticTacPrefab in ticTacPrefabs) {

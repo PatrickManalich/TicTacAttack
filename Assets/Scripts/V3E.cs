@@ -2,9 +2,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-/* 
- * 
- */
+/* Vector 3 Extension class that simplifies setting specific coordinate of a Vector3. */
 public static class V3E {
 
     public static Vector3 SetX(this Vector3 vectorParam, float newX) {

@@ -12,16 +12,20 @@ public abstract class TicTac : MonoBehaviour {
     public abstract TicTacTag.PathDistance PathDistance { get; set; }  // Path distance property
 
     private static Base baseScript; // A reference to the Base script that instantiated this tic tac
-    private Animator animator;      // A reference to the animator in the child game object
+    private Animator animator;      // A reference to the animator in the child GameObject
     private Vector3 collectorPosition;   // The position of the collector
+    private const float minArrivalDistance = 0.005f;    // The minimum distance between the tic tac and the
+                                                        // path position to qualify as having arrived
 
     protected abstract float Speed { get; } // A float property that dictates the tic tac's speed
+    protected static Collector collectorScript;  // A reference to the collector GameObjects's script
 
     /* Takes in a base script reference and initializes its private variable. */
-    public void InitializeVariables(ref Base baseScript) {
+    public void InitializeVariables(ref Base baseScript, ref Collector collectorScript) {
         TicTac.baseScript = baseScript;
         animator = transform.GetChild(0).GetComponent<Animator>();
-        collectorPosition = new Vector3(0.0f, transform.position.y, 0.0f);
+        TicTac.collectorScript = collectorScript;
+        collectorPosition = V3E.SetY(collectorScript.transform.position, transform.position.y);
     }
 
     /* Takes in a path position and delay time and calls the private coroutine "Advance". */
@@ -46,7 +50,7 @@ public abstract class TicTac : MonoBehaviour {
         animator.SetTrigger("MovingTrigger");
 
         pathPosition = V3E.SetY(pathPosition, transform.position.y);    // Set height of path position to tic tac's height
-        while (Vector3.Distance(transform.position, pathPosition) > 0.005f) {
+        while (Vector3.Distance(transform.position, pathPosition) > minArrivalDistance) {
             float step = Speed * Time.deltaTime;
             transform.position = Vector3.MoveTowards(transform.position, pathPosition, step);
             yield return null;

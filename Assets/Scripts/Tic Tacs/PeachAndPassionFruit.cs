@@ -16,12 +16,13 @@ public class PeachAndPassionFruit : TicTac {
     private const TicTacTag.Flavor flavor = TicTacTag.Flavor.PeachAndPassionFruit;
     private const TicTacTag.PathRoute pathRoute = TicTacTag.PathRoute.Melee;
     private TicTacTag.PathDistance pathDistance = TicTacTag.PathDistance.None;
+    private const int damage = 5;
     private const float speed = 0.75f;
 
     protected override float Speed { get { return speed; } }
 
     public override void Attack() {
-        //Debug.Log("Peach And Passion Fruit attacked!");
+        TicTac.collectorScript.Damage(damage);
     }
 
 }
