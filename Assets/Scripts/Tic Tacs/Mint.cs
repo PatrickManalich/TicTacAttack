@@ -6,22 +6,22 @@ using UnityEngine;
  * at fast intervals for low damage. */
 public class Mint : TicTac {
 
-    public override TicTacTag.Flavor Flavor { get { return flavor; } }
-    public override TicTacTag.PathRoute PathRoute { get { return pathRoute; } }
-    public override TicTacTag.PathDistance PathDistance {
-        get { return pathDistance; }
-        set { pathDistance = value; }
+    public override SE.Flavor Flavor { get { return flavor; } }
+    public override SE.PathRoute PathRoute { get { return pathRoute; } }
+    public override SE.PathDistance CurrPathDistance {
+        get { return currPathDistance; }
+        set { currPathDistance = value; }
     }
     public GameObject projectilePrefab;
 
-    private const TicTacTag.Flavor flavor = TicTacTag.Flavor.Mint;
-    private const TicTacTag.PathRoute pathRoute = TicTacTag.PathRoute.Ranged;
-    private TicTacTag.PathDistance pathDistance = TicTacTag.PathDistance.None;
+    private const SE.Flavor flavor = SE.Flavor.Mint;
+    private const SE.PathRoute pathRoute = SE.PathRoute.Ranged;
+    private SE.PathDistance currPathDistance = SE.PathDistance.None;
     private const int damage = 2;
     private const float speed = .75f;
     private GameObject projectile;
     private Rigidbody projectileRigidbody;
-    private const float projectileSpeed = 6.0f;
+    private const float projectileSpeed = 4.0f;
     private const float projectileArc = 2.0f;
 
     private void Awake() {
@@ -41,7 +41,7 @@ public class Mint : TicTac {
         TicTac.collectorScript.Damage(damage);
     }
 
-    public override void Remove() {
+    protected override void Remove() {
         base.Remove();
         Destroy(projectile);
     }

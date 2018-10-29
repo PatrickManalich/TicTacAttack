@@ -6,16 +6,16 @@ using UnityEngine;
  * with low damage. */
 public class Orange : TicTac {
 
-    public override TicTacTag.Flavor Flavor { get { return flavor; } }
-    public override TicTacTag.PathRoute PathRoute { get { return pathRoute; } }
-    public override TicTacTag.PathDistance PathDistance {
-        get { return pathDistance; }
-        set { pathDistance = value; }
+    public override SE.Flavor Flavor { get { return flavor; } }
+    public override SE.PathRoute PathRoute { get { return pathRoute; } }
+    public override SE.PathDistance CurrPathDistance {
+        get { return currPathDistance; }
+        set { currPathDistance = value; }
     }
 
-    private const TicTacTag.Flavor flavor = TicTacTag.Flavor.Orange;
-    private const TicTacTag.PathRoute pathRoute = TicTacTag.PathRoute.Melee;
-    private TicTacTag.PathDistance pathDistance = TicTacTag.PathDistance.None;
+    private const SE.Flavor flavor = SE.Flavor.Orange;
+    private const SE.PathRoute pathRoute = SE.PathRoute.Melee;
+    private SE.PathDistance currPathDistance = SE.PathDistance.None;
     private const int damage = 2;
     private const float speed = 1.5f;
 
