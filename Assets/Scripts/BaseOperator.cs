@@ -5,114 +5,63 @@ using UnityEngine;
 /* Cordinates base spawning at specified times using the private spawn model class */
 public class BaseOperator : MonoBehaviour {
 
-    public GameObject baseA;    // The reference of the base A GameObject
-    public GameObject baseB;    // The reference of the base B GameObject
-    public GameObject baseC;    // The reference of the base C GameObject
-    public GameObject baseD;    // The reference of the base D GameObject
+    public List<GameObject> bases;
+
 
     private class SpawnModel {  // Encapsulates all the necessary information to spawn tic tacs
+        public SE.PathLetter pathLetter;    // The path letter of the path that tic tacs will spawn on
         public int spawnAmount; // How many tic tacs to spawn
-        public TicTacTag.Flavor flavor;    // What flavor of tic tacs to spawn
+        public SE.Flavor flavor;    // What flavor of tic tacs to spawn
         public float spawnTime; // How long to wait before spawning the tic tacs
-        public SpawnModel(int spawnAmount, TicTacTag.Flavor flavor, float spawnTime) {
+        public SpawnModel(SE.PathLetter pathLetter, int spawnAmount, SE.Flavor flavor, float spawnTime) {
+            this.pathLetter = pathLetter;
             this.spawnAmount = spawnAmount;
             this.flavor = flavor;
             this.spawnTime = spawnTime;
         }
     }
-    private Base baseAScript;   // Cached script for base A
-    private Base baseBScript;   // Cached script for base B
-    private Base baseCScript;   // Cached script for base C
-    private Base baseDScript;   // Cached script for base D
-    private Dictionary<string, Base> baseScriptDictionary;  // Dictionary of cached base scripts
-    private Queue<SpawnModel> baseASpawnModels; // A queue of spawn models to be spawned by base A
-    private Queue<SpawnModel> baseBSpawnModels; // A queue of spawn models to be spawned by base B
-    private Queue<SpawnModel> baseCSpawnModels; // A queue of spawn models to be spawned by base C
-    private Queue<SpawnModel> baseDSpawnModels; // A queue of spawn models to be spawned by base D
+    private Dictionary<SE.PathLetter, Base> baseScriptDictionary;  // Dictionary of cached base scripts
+    private Queue<SpawnModel> spawnModels;
 
     private void Awake() {
-        baseAScript = baseA.GetComponent<Base>();   // Initialize base scripts
-        baseBScript = baseB.GetComponent<Base>();
-        baseCScript = baseC.GetComponent<Base>();
-        baseDScript = baseD.GetComponent<Base>();
+        baseScriptDictionary = new Dictionary<SE.PathLetter, Base>();  // Initialize base script dictionary
+        foreach(GameObject baseGO in bases){
+            Base baseScript = baseGO.GetComponent<Base>();
+            baseScriptDictionary.Add(baseScript.pathLetter, baseScript);
+        }
 
-        baseScriptDictionary = new Dictionary<string, Base>();  // Initialize base script dictionary
-        baseScriptDictionary.Add(baseA.name, baseAScript);
-        baseScriptDictionary.Add(baseB.name, baseBScript);
-        baseScriptDictionary.Add(baseC.name, baseCScript);
-        baseScriptDictionary.Add(baseD.name, baseDScript);
+        spawnModels = new Queue<SpawnModel>();
 
-        baseASpawnModels = new Queue<SpawnModel>(); // Initialize spawn models for each base
-        baseBSpawnModels = new Queue<SpawnModel>();
-        baseCSpawnModels = new Queue<SpawnModel>();
-        baseDSpawnModels = new Queue<SpawnModel>();
-
-        // Wave 1
-        baseASpawnModels.Enqueue(new SpawnModel(20, TicTacTag.Flavor.Orange, 1.0f));
-        baseBSpawnModels.Enqueue(new SpawnModel(20, TicTacTag.Flavor.Mint, 1.0f));
-        baseCSpawnModels.Enqueue(new SpawnModel(20, TicTacTag.Flavor.PeachAndPassionFruit, 1.0f));
-        baseDSpawnModels.Enqueue(new SpawnModel(20, TicTacTag.Flavor.Spearmint, 1.0f));
-        //// Wave 2
-        //baseASpawnModels.Enqueue(new SpawnModel(5, TicTacTag.Flavor.Mint, 5.0f));
-        //baseBSpawnModels.Enqueue(new SpawnModel(5, TicTacTag.Flavor.PeachAndPassionFruit, 5.0f));
-        //baseCSpawnModels.Enqueue(new SpawnModel(5, TicTacTag.Flavor.Spearmint, 5.0f));
-        //baseDSpawnModels.Enqueue(new SpawnModel(5, TicTacTag.Flavor.Orange, 5.0f));
-        //// Wave 3
-        //baseASpawnModels.Enqueue(new SpawnModel(5, TicTacTag.Flavor.PeachAndPassionFruit, 5.0f));
-        //baseBSpawnModels.Enqueue(new SpawnModel(5, TicTacTag.Flavor.Spearmint, 5.0f));
-        //baseCSpawnModels.Enqueue(new SpawnModel(5, TicTacTag.Flavor.Orange, 5.0f));
-        //baseDSpawnModels.Enqueue(new SpawnModel(5, TicTacTag.Flavor.Mint, 5.0f));
-        //// Wave 4
-        //baseASpawnModels.Enqueue(new SpawnModel(5, TicTacTag.Flavor.Spearmint, 5.0f));
-        //baseBSpawnModels.Enqueue(new SpawnModel(5, TicTacTag.Flavor.Orange, 5.0f));
-        //baseCSpawnModels.Enqueue(new SpawnModel(5, TicTacTag.Flavor.Mint, 5.0f));
-        //baseDSpawnModels.Enqueue(new SpawnModel(5, TicTacTag.Flavor.PeachAndPassionFruit, 5.0f));
+        spawnModels.Enqueue(new SpawnModel(SE.PathLetter.A, 75, SE.Flavor.Mint, 0.0f));
     }
 
     private void Start() {
-        if(baseASpawnModels.Count > 0)  // Start 4 base spawn coroutines
-            StartCoroutine(BaseSpawn(baseA.name, baseASpawnModels.Dequeue()));
-        if (baseBSpawnModels.Count > 0)
-            StartCoroutine(BaseSpawn(baseB.name, baseBSpawnModels.Dequeue()));
-        if (baseCSpawnModels.Count > 0)
-            StartCoroutine(BaseSpawn(baseC.name, baseCSpawnModels.Dequeue()));
-        if (baseDSpawnModels.Count > 0)
-            StartCoroutine(BaseSpawn(baseD.name, baseDSpawnModels.Dequeue()));
+        if(spawnModels.Count > 0)
+            StartCoroutine(SpawnTicTacsFromSpawnModels());
     }
 
-    /* Takes in a base name and spawn model, and spawns tic tacs from the respective base using the
-     * information from the spawn model.*/
-    private IEnumerator BaseSpawn(string baseName, SpawnModel spawnModel) {
-        if (!baseScriptDictionary.ContainsKey(baseName)) {
-            Debug.LogWarning("Base with name " + baseName + " doesn't exist.");
+
+    private IEnumerator SpawnTicTacsFromSpawnModels() {
+        SpawnModel spawnModel = spawnModels.Dequeue();
+
+        if (!baseScriptDictionary.ContainsKey(spawnModel.pathLetter)) {
+            Debug.LogWarning("Base with path letter " + spawnModel.pathLetter + " doesn't exist.");
             yield return null;
         } else if(spawnModel.spawnAmount <= 0) {
             Debug.LogWarning("Shouldn't be spawning " + spawnModel.spawnAmount + " tic tacs.");
             yield return null;
-        } else if(spawnModel.spawnTime <= 0) {
+        } else if(spawnModel.spawnTime < 0) {
             Debug.LogWarning("Spawn time of " + spawnModel.spawnTime + " is invalid.");
             yield return null;
         }
 
         yield return new WaitForSeconds(spawnModel.spawnTime);
-        Debug.Log((int)Time.time + " secs: Spawning " + spawnModel.spawnAmount + " " + spawnModel.flavor + " Tic Tacs from " + baseName);
-        baseScriptDictionary[baseName].SpawnEnemies(spawnModel.flavor, spawnModel.spawnAmount);
-
-        Queue<SpawnModel> spawnModels;              // Store a reference to the correct spawn model queue
-        if (string.Equals(baseName, baseA.name))
-            spawnModels = baseASpawnModels;
-        else if (string.Equals(baseName, baseB.name))
-            spawnModels = baseBSpawnModels;
-        else if (string.Equals(baseName, baseC.name))
-            spawnModels = baseCSpawnModels;
-        else
-            spawnModels = baseDSpawnModels;
+        baseScriptDictionary[spawnModel.pathLetter].SpawnEnemies(spawnModel.flavor, spawnModel.spawnAmount);
         
-        if (spawnModels.Count == 0) {
-            Debug.Log(baseName + " finished spawning tic tacs");
+        if (spawnModels.Count == 0)
             yield return null;
-        } else
-            yield return StartCoroutine(BaseSpawn(baseName, spawnModels.Dequeue()));
+        else
+            yield return StartCoroutine(SpawnTicTacsFromSpawnModels());
     }
     
 }
