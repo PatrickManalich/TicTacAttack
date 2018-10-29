@@ -124,7 +124,7 @@ Rigidbody:
   m_PrefabInternal: {fileID: 100100000}
   m_GameObject: {fileID: 1365319390418008}
   serializedVersion: 2
-  m_Mass: 1
+  m_Mass: 0.06
   m_Drag: 0
   m_AngularDrag: 0.05
   m_UseGravity: 0
@@ -141,7 +141,7 @@ Animator:
   m_GameObject: {fileID: 1365319390418008}
   m_Enabled: 1
   m_Avatar: {fileID: 0}
-  m_Controller: {fileID: 9100000, guid: 632e143828c92fc4884608055e61acdb, type: 2}
+  m_Controller: {fileID: 9100000, guid: 2c671bea10db2a24088bca43c9a42e5a, type: 2}
   m_CullingMode: 0
   m_UpdateMode: 0
   m_ApplyRootMotion: 0
